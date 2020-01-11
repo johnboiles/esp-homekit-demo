@@ -7,8 +7,8 @@ EXTRA_COMPONENTS = \
 	$(abspath ../../components/common/homekit)
 
 FLASH_SIZE ?= 32
-REED_PIN ?= 4
-RELAY_PIN ?= 2
+REED_PIN ?= 0
+RELAY_PIN ?= 5
 
 EXTRA_CFLAGS += -I../.. -DHOMEKIT_SHORT_APPLE_UUIDS -DREED_PIN=$(REED_PIN) -DRELAY_PIN=$(RELAY_PIN)
 

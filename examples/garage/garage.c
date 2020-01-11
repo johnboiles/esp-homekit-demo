@@ -26,7 +26,7 @@
 #define HOMEKIT_CHARACTERISTIC_TARGET_DOOR_STATE_CLOSED 1
 #define HOMEKIT_CHARACTERISTIC_TARGET_DOOR_STATE_UNKNOWN 255
 
-#define OPEN_CLOSE_DURATION 22
+#define OPEN_CLOSE_DURATION 2
 
 const char *state_description(uint8_t state) {
     const char* description = "unknown";
@@ -65,7 +65,7 @@ void identify(homekit_value_t _value);
 homekit_accessory_t *accessories[] = {
     HOMEKIT_ACCESSORY(.id=1, .category=homekit_accessory_category_garage, .services=(homekit_service_t*[]){
         HOMEKIT_SERVICE(ACCESSORY_INFORMATION, .characteristics=(homekit_characteristic_t*[]){
-            HOMEKIT_CHARACTERISTIC(NAME, "Garagentor"),
+            HOMEKIT_CHARACTERISTIC(NAME, "Garage"),
             HOMEKIT_CHARACTERISTIC(MANUFACTURER, "ObjP"),
             HOMEKIT_CHARACTERISTIC(SERIAL_NUMBER, "237A2BAB119E"),
             HOMEKIT_CHARACTERISTIC(MODEL, "GDO"),
@@ -74,7 +74,7 @@ homekit_accessory_t *accessories[] = {
             NULL
         }),
         HOMEKIT_SERVICE(GARAGE_DOOR_OPENER, .primary=true, .characteristics=(homekit_characteristic_t*[]){
-            HOMEKIT_CHARACTERISTIC(NAME, "Tor"),
+            HOMEKIT_CHARACTERISTIC(NAME, "Garage"),
             HOMEKIT_CHARACTERISTIC(
                 CURRENT_DOOR_STATE, HOMEKIT_CHARACTERISTIC_CURRENT_DOOR_STATE_CLOSED,
                 .getter=gdo_current_state_get,
@@ -104,7 +104,7 @@ ETSTimer update_timer; // used for delayed updating from contact sensor
 
 
 void relay_write(bool on) {
-    gpio_write(RELAY_PIN, on ? 0 : 1);
+    gpio_write(RELAY_PIN, on ? 1 : 0);
 }
 
 void relay_init() {
@@ -192,7 +192,7 @@ void current_state_set(uint8_t new_state) {
 void current_door_state_update_from_sensor() {
     contact_sensor_state_t sensor_state = contact_sensor_state_get(REED_PIN);
 
-    switch (sensor_state) {
+    switch (!sensor_state) {
         case CONTACT_CLOSED:
             current_state_set(HOMEKIT_CHARACTERISTIC_CURRENT_DOOR_STATE_OPEN);
             break;
